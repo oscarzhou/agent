@@ -13,6 +13,7 @@ import (
 
 	"github.com/portainer/agent"
 	"github.com/portainer/agent/edge/client"
+	"github.com/portainer/agent/edge/revoke"
 	"github.com/portainer/agent/edge/scheduler"
 	"github.com/portainer/agent/edge/stack"
 	portainer "github.com/portainer/portainer/api"
@@ -240,6 +241,8 @@ func buildHTTPClient(timeout float64, options *agent.Options) *http.Client {
 }
 
 func buildTransport(options *agent.Options) *http.Transport {
+	revokeService := revoke.NewService()
+
 	if options.EdgeInsecurePoll {
 		return &http.Transport{
 			TLSClientConfig: &tls.Config{
@@ -275,6 +278,22 @@ func buildTransport(options *agent.Options) *http.Transport {
 					}
 
 					return &cert, nil
+				},
+				VerifyPeerCertificate: func(rawCerts [][]byte, verifiedChains [][]*x509.Certificate) error {
+					for _, chain := range verifiedChains {
+						for _, cert := range chain {
+							revoked, err := revokeService.VerifyCertificate(cert)
+							if err != nil {
+								return err
+							}
+
+							if revoked {
+								return errors.New("certificate has been revoked")
+							}
+						}
+					}
+
+					return nil
 				},
 			},
 		}
