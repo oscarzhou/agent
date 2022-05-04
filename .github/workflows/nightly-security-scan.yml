@@ -136,6 +136,7 @@ jobs:
           matrix.image.status == 'failure'
         uses: slackapi/slack-github-action@v1.18.0
         with:
+          channel-id: 'C039ZB872N5'
           payload: |
             {
               "blocks": [
@@ -170,5 +171,4 @@ jobs:
               ]
             }
         env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SECURITY_SLACK_WEBHOOK_URL }}
-          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
