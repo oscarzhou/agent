@@ -155,7 +155,7 @@ jobs:
                       "type": "section",
                       "text": {
                         "type": "mrkdwn",
-                        "text": "*t Go dependency check*: *${{ matrix.go.status }}*\n${{ matrix.go.summary }}"
+                        "text": "*Go dependency check*: *${{ matrix.go.status }}*\n${{ matrix.go.summary }}"
                       }
                     },
                     {
