@@ -61,6 +61,14 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@master
 
+      - name: Use golang 1.18
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.18' 
+
+      - name: Compile the codebase
+        run: ./dev.sh compile
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v1
 
